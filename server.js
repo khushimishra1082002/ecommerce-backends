@@ -21,19 +21,18 @@ const orderRoutes = require("../Backend/routes/orderRoutes");
 
 //Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://ecommerce-frontend-git-main-khushis-projects-d9085b1c.vercel.app"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: true
 };
 
 app.use(cors(corsOptions));
 
 
-app.use(express.urlencoded({ extended: true }));
 
 //Connect to the database
 connectDB()
