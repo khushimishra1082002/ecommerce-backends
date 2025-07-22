@@ -21,7 +21,14 @@ const orderRoutes = require("../Backend/routes/orderRoutes");
 
 //Middleware
 app.use(express.json());
-app.use(cors());
+const corsOptions = {
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  credentials: true, // If using cookies or HTTP auth
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.urlencoded({ extended: true }));
 
 //Connect to the database
