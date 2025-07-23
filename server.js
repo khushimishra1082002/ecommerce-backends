@@ -54,7 +54,10 @@ app.use("/api/deliveryInfo", deliveryInfoRoutes);
 app.use("/api/order", orderRoutes);
 
 // Serve static files (only works locally or on platforms that allow local file system access)
-app.use("/api/upload", express.static(path.join(__dirname, "uploads")));
+// app.use("/api/upload", express.static(path.join(__dirname, "uploads")));
+const uploadsPath = path.join(__dirname, "uploads");
+
+app.use("/api/upload", express.static(uploadsPath));
 
 // Export the app for serverless function
 module.exports = app;
