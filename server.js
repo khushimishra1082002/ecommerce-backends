@@ -32,8 +32,6 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
 
-
-
 //Connect to the database
 connectDB()
   .then(() => console.log("Database connected successfully"))
