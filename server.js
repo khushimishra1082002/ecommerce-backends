@@ -3,22 +3,22 @@ const cors = require("cors");
 const path = require("path");
 
 // Import DB and routes
-const connectDB = require("./Backend/config/db");
-const authRoutes = require("./Backend/routes/authRoutes");
-const userRoutes = require("./Backend/routes/userRoutes");
-const categoryRoutes = require("./Backend/routes/categoryRoutes");
-const productRoutes = require("./Backend/routes/productRoutes");
-const subcategoryRoutes = require("./Backend/routes/subcategoryRoutes");
-const brandRoutes = require("./Backend/routes/brandRoutes");
-const attributeOptionRoutes = require("./Backend/routes/attributeOptionRoutes");
-const bannerRoutes = require("./Backend/routes/bannerRoutes");
-const posterRoutes = require("./Backend/routes/posterRoutes");
-const cartRoutes = require("./Backend/routes/cartRoutes");
-const wishlistRoutes = require("./Backend/routes/wishlistRoutes");
-const priceRangeRoutes = require("./Backend/routes/priceRangeRoutes");
-const discountOptionsRoutes = require("./Backend/routes/discountOptionRoutes");
-const deliveryInfoRoutes = require("./Backend/routes/deliveryInfoRoutes");
-const orderRoutes = require("./Backend/routes/orderRoutes");
+const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
+const productRoutes = require("./routes/productRoutes");
+const subcategoryRoutes = require("./routes/subcategoryRoutes");
+const brandRoutes = require("./routes/brandRoutes");
+const attributeOptionRoutes = require("./routes/attributeOptionRoutes");
+const bannerRoutes = require("./routes/bannerRoutes");
+const posterRoutes = require("./routes/posterRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
+const priceRangeRoutes = require("./routes/priceRangeRoutes");
+const discountOptionsRoutes = require("./routes/discountOptionRoutes");
+const deliveryInfoRoutes = require("./routes/deliveryInfoRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 const app = express();
 
