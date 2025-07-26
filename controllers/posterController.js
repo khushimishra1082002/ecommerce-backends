@@ -25,7 +25,16 @@ const createPoster = async (req, res) => {
       endDate,
       active,
     } = req.body;
-    const image = req.file ? req.file.filename : "";
+
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
+    if (!req.file) {
+      return res.status(400).json({ message: "Image is required" });
+    }
+
+    const image = req.file.filename;
+
     const newPoster = await Poster.create({
       link,
       title,
@@ -38,11 +47,13 @@ const createPoster = async (req, res) => {
       active,
       image,
     });
+
     res.status(200).json({
       message: "Poster added successfully",
       newPoster,
     });
   } catch (err) {
+    console.error("Server error:", err); // log full error
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
