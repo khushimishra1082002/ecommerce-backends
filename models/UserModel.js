@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
     image: {
       type: String,
       required: false,
-      default: "https://img.freepik.com/vetores-premium/icones-de-usuarios-inclui-icones-de-usuario-icones-do-pessoal-simbolos-e-elementos-de-design-grafico-de-qualidade-premium_981536-526.jpg?semt=ais_hybrid&w=740",
+      
     },
 
     phoneNo: {

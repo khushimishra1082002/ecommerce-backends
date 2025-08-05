@@ -1,17 +1,33 @@
 const Order = require("../models/OrderModel");
-const mongoose =require("mongoose")
+const mongoose = require("mongoose");
+const User = require("../models/UserModel");
 
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .sort({ createdAt: -1 })
-      .populate("userId", "fullname email") 
-      .populate("items.productId", "name image price"); 
+      .populate("userId", "fullname email phoneNo address")
+      .populate("items.productId", "name image price");
 
     res.status(200).json(orders);
   } catch (error) {
     console.error("Error fetching all orders:", error);
     res.status(500).json({ message: "Failed to get all orders", error });
+  }
+};
+
+const getUserOrders = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const orders = await Order.find({ userId })
+      .sort({ createdAt: -1 }).populate("userId", "fullname email phoneNo address")
+      .populate("items.productId", "name image price");
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("Error fetching user orders:", error);
+    res.status(500).json({ message: "Failed to get orders", error });
   }
 };
 
@@ -26,6 +42,8 @@ const placeOrder = async (req, res) => {
       paymentDetails,
       status = "Pending",
     } = req.body;
+
+    console.log(deliveryInfo);
 
     if (
       !userId ||
@@ -48,30 +66,33 @@ const placeOrder = async (req, res) => {
       status,
     });
 
+   const data = await User.findByIdAndUpdate(
+      userId,
+      {
+        phoneNo: deliveryInfo.phoneNo,
+        address: {
+          street:
+            deliveryInfo.address1 +
+            (deliveryInfo.address2 ? `, ${deliveryInfo.address2}` : ""),
+          city: deliveryInfo.city,
+          state: deliveryInfo.state,
+          zipCode: deliveryInfo.zip,
+          country: deliveryInfo.country || "India", 
+        },
+      },
+      { new: true }
+    );
+
     res.status(201).json({
       message: "Order placed successfully",
       order: newOrder,
+      data:data
     });
   } catch (err) {
     res.status(500).json({
       message: "Server error",
       error: err.message,
     });
-  }
-};
-
-const getUserOrders = async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const orders = await Order.find({ userId })
-      .sort({ createdAt: -1 })
-      .populate("items.productId", "name image price");
-
-    res.status(200).json(orders);
-  } catch (error) {
-    console.error("Error fetching user orders:", error);
-    res.status(500).json({ message: "Failed to get orders", error });
   }
 };
 
@@ -111,17 +132,17 @@ const getFilteredOrders = async (req, res) => {
       }
 
       // Search in string fields (case-insensitive)
-      const regex = { $regex: q, $options: 'i' };
+      const regex = { $regex: q, $options: "i" };
 
       orFilters.push(
-        { 'userId.fullname': regex },
-        { 'userId.email': regex },
-        { 'deliveryInfo.fullname': regex },
-        { 'deliveryInfo.email': regex },
-        { 'deliveryInfo.phoneNo': regex },
-        { 'deliveryInfo.city': regex },
-        { 'status': regex },
-        { 'paymentMethod': regex }
+        { "userId.fullname": regex },
+        { "userId.email": regex },
+        { "deliveryInfo.fullname": regex },
+        { "deliveryInfo.email": regex },
+        { "deliveryInfo.phoneNo": regex },
+        { "deliveryInfo.city": regex },
+        { status: regex },
+        { paymentMethod: regex }
       );
 
       filter.$or = orFilters;
@@ -151,10 +172,11 @@ const updateOrderStatus = async (req, res) => {
     );
     res.status(200).json(updatedOrder);
   } catch (err) {
-    res.status(500).json({ message: "Failed to update order", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Failed to update order", error: err.message });
   }
 };
-
 
 module.exports = {
   getAllOrders,
@@ -162,5 +184,5 @@ module.exports = {
   getUserOrders,
   deleteOrder,
   getFilteredOrders,
-  updateOrderStatus
+  updateOrderStatus,
 };

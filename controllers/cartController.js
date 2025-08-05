@@ -142,9 +142,37 @@ const updateCartProductQuantity = async (req, res) => {
   }
 };
 
+const clearCart = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const cart = await Cart.findOne({ userId });
+
+    if (!cart) {
+      return res.status(404).json({ message: "Cart not found" });
+    }
+
+    cart.items = [];
+    cart.summary = {
+      totalPrice: 0,
+      totalDiscount: 0,
+      totalTax: 0,
+      finalTotal: 0,
+    };
+
+    await cart.save();
+
+    res.status(200).json({ message: "Cart cleared successfully", cart });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
 module.exports = {
   getCartProduct,
   addProductInCart,
   deleteProductFromCart,
   updateCartProductQuantity,
+  clearCart
 };

@@ -21,7 +21,10 @@ const getSingleUser = async (req, res) => {
     if (!singleUser) {
       res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json(singleUser);
+    res.status(200).json(
+   
+    singleUser,
+    );
   } catch (error) {
     res.status(500).json({ message: "server error", message: err.message });
   }
