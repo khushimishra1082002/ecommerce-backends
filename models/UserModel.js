@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema(
     image: {
       type: String,
       required: false,
-      
     },
 
     phoneNo: {
@@ -44,6 +43,7 @@ const userSchema = new mongoose.Schema(
         },
       },
     ],
+    roleId: { type: mongoose.Schema.Types.ObjectId, ref: "Role" , default: null }
   },
   {
     timestamps: true,

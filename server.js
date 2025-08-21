@@ -21,6 +21,9 @@ const priceRangeRoutes = require("./routes/priceRangeRoutes");
 const discountOptionsRoutes = require("./routes/discountOptionRoutes");
 const deliveryInfoRoutes = require("./routes/deliveryInfoRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const roleRoutes = require("./routes/roleRoutes")
+const permissionRoutes = require("./routes/permissionRoutes")
+
 
 const app = express();
 
@@ -54,6 +57,9 @@ app.use("/api/priceRange", priceRangeRoutes);
 app.use("/api/discountOptions", discountOptionsRoutes);
 app.use("/api/deliveryInfo", deliveryInfoRoutes);
 app.use("/api/order", orderRoutes);
+app.use("/api/role",roleRoutes)
+app.use("/api/permission",permissionRoutes)
+
 
 // Serve static files (only works locally or on platforms that allow local file system access)
 // app.use("/api/upload", express.static(path.join(__dirname, "uploads")));
@@ -83,6 +89,9 @@ module.exports = app;
 // const discountOptionsRoutes = require("./routes/discountOptionRoutes");
 // const deliveryInfoRoutes = require("./routes/deliveryInfoRoutes");
 // const orderRoutes = require("./routes/orderRoutes");
+// const roleRoutes = require("./routes/roleRoutes")
+// const permissionRoutes = require("./routes/permissionRoutes")
+
 
 // // Locally run on port 8000
 // const app = express();
@@ -107,6 +116,8 @@ module.exports = app;
 // app.use("/api/discountOptions", discountOptionsRoutes);
 // app.use("/api/deliveryInfo", deliveryInfoRoutes);
 // app.use("/api/order", orderRoutes);
+// app.use("/api/role",roleRoutes)
+// app.use("/api/permission",permissionRoutes)
 
 // // Connect to DB
 // connectDB()

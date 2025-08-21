@@ -38,25 +38,31 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const errors = validateLoginData({ email, password });
     if (errors.length > 0) {
-      res.status(400).json({ errors });
+      return res.status(400).json({ errors });
     }
-    const existingUser = await User.findOne({ email });
-    console.log("LOGIN USER:", existingUser);
 
+    const existingUser = await User.findOne({ email }).populate(
+      "roleId",
+      "name"
+    );
     if (!existingUser) {
-      return res.status(400).json({ message: "Email is not exist" });
+      return res.status(400).json({ message: "Email does not exist" });
     }
+
     const isMatch = await bcrypt.compare(password, existingUser.password);
     if (!isMatch) {
-      res.status(400).json("Password is incorrect");
+      return res.status(400).json({ message: "Password is incorrect" });
     }
+
     const token = jwt.sign(
       {
         id: existingUser._id,
-        name: existingUser.name,
+        fullname: existingUser.fullname,
         email: existingUser.email,
+        role: existingUser.roleId.name,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -64,11 +70,18 @@ const login = async (req, res) => {
 
     res.status(200).json({
       message: "Login successfully",
-      token: token,
-      user: existingUser,
+      token,
+      user: {
+        _id: existingUser._id,
+        fullname: existingUser.fullname,
+        email: existingUser.email,
+        roleId: existingUser.roleId._id,
+        role: existingUser.roleId.name,
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: "server error", message: err.message });
+    console.error("Login error:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
