@@ -1,6 +1,10 @@
+// run for vercel
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+
+// Import DB and routes
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -21,13 +25,22 @@ const roleRoutes = require("./routes/roleRoutes")
 const permissionRoutes = require("./routes/permissionRoutes")
 
 
-// Locally run on port 8000
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Connect to MongoDB
+connectDB()
+  .then(() => console.log("Database connected successfully"))
+  .catch((err) => console.error("Database connection error", err));
+
+// Routes
+app.get("/", (req, res) => {
+  res.send("Welcome to the ecommerce website");
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -47,24 +60,12 @@ app.use("/api/order", orderRoutes);
 app.use("/api/role",roleRoutes)
 app.use("/api/permission",permissionRoutes)
 
-// Connect to DB
-connectDB()
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
 
-// Routes
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
+// Serve static files (only works locally or on platforms that allow local file system access)
+// app.use("/api/upload", express.static(path.join(__dirname, "uploads")));
+const uploadsPath = path.join(__dirname, "uploads");
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-// ... other routes
+app.use("/api/upload", express.static(uploadsPath));
 
-app.use("/api/upload", express.static(path.join(__dirname, "uploads")));
-
-// Start server locally
-const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+// Export the app for serverless function
+module.exports = app;
