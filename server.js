@@ -23,6 +23,7 @@ const deliveryInfoRoutes = require("./routes/deliveryInfoRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const roleRoutes = require("./routes/roleRoutes")
 const permissionRoutes = require("./routes/permissionRoutes")
+const saveforletterRoutes = require("./routes/savedForLetterRoutes")
 
 
 const app = express();
@@ -59,6 +60,7 @@ app.use("/api/deliveryInfo", deliveryInfoRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/role",roleRoutes)
 app.use("/api/permission",permissionRoutes)
+app.use("/api/saveforletters",saveforletterRoutes)
 
 
 // Serve static files (only works locally or on platforms that allow local file system access)
@@ -68,11 +70,13 @@ const uploadsPath = path.join(__dirname, "uploads");
 app.use("/api/upload", express.static(uploadsPath));
 
 // Export the app for serverless function
+// module.exports = app;
+
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running locally on http://localhost:${PORT}`);
+});
+
 module.exports = app;
-
-
-// const PORT = process.env.PORT || 5000;
-
-// app.listen(PORT, () => {
-//   console.log(`✅ Server running locally on http://localhost:${PORT}`);
-// });
