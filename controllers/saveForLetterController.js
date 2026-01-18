@@ -55,4 +55,75 @@ const saveForLaterController = async (req, res) => {
   }
 };
 
-module.exports = { saveForLaterController };
+
+const getSavedForLaterController = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "UserId is required",
+      });
+    }
+
+    const userObjId = new Types.ObjectId(userId);
+
+    const savedItems = await SavedForLater.find({ userId: userObjId })
+      .populate("productId");
+
+    return res.status(200).json({
+      success: true,
+      count: savedItems.length,
+      savedForLater: savedItems,
+    });
+  } catch (error) {
+    console.error("Get Save For Later Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch saved products",
+    });
+  }
+};
+
+const removeSavedForLaterController = async (req, res) => {
+  const { userId, productId } = req.params;
+
+  try {
+    if (!userId || !productId) {
+      return res.status(400).json({
+        success: false,
+        message: "userId and productId are required",
+      });
+    }
+
+    const userObjId = new Types.ObjectId(userId);
+    const prodObjId = new Types.ObjectId(productId);
+
+    const deletedItem = await SavedForLater.findOneAndDelete({
+      userId: userObjId,
+      productId: prodObjId,
+    });
+
+    if (!deletedItem) {
+      return res.status(404).json({
+        success: false,
+        message: "Saved product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product removed from Save For Later",
+    });
+  } catch (error) {
+    console.error("Remove Save For Later Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to remove saved product",
+    });
+  }
+};
+
+
+module.exports = { saveForLaterController,getSavedForLaterController ,removeSavedForLaterController};
