@@ -28,7 +28,12 @@ const createCategory = async (req, res) => {
   try {
     let { name, description, isActive } = req.body;
 
-    const image = req.file ? req.file.filename : "";
+    // ✅ Cloudinary path
+    const image = req.file?.path;
+
+    if (!image) {
+      return res.status(400).json({ message: "Category image is required" });
+    }
 
     const slug = slugify(name, { lower: true, strict: true });
 
@@ -37,18 +42,20 @@ const createCategory = async (req, res) => {
       description,
       image,
       slug,
+      isActive: isActive ?? true,
     });
 
     res.status(201).json({
       ok: true,
       message: "Category added successfully",
-      product: newCategory,
+      category: newCategory,
     });
   } catch (err) {
     console.error("Error creating category:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 const deleteCategory = async (req, res) => {
   try {
@@ -78,14 +85,15 @@ const updatedCategory = async (req, res) => {
       return res.status(404).json({ message: "Category not found" });
     }
 
-    const { name } = req.body;
+    const { name, description } = req.body;
     const isActive = req.body.isActive === "true";
 
-    const image = req.file ? req.file.filename : existingCategory.image;
+    // ✅ Multer + Cloudinary path
+    const image = req.file ? req.file.path : existingCategory.image;
 
     const updatedData = {
       name,
-      description: req.body.description,
+      description,
       image,
       isActive,
     };
@@ -104,12 +112,14 @@ const updatedCategory = async (req, res) => {
 
     res.status(200).json({
       message: "Category updated successfully",
-      newUpdatedData,
+      category: newUpdatedData,
     });
   } catch (err) {
-    res.status(500).json({ message: "server error", error: err.message });
+    console.error("Error updating category:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 const getFilteredCategories = async (req, res) => {
   try {

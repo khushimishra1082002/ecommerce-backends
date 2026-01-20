@@ -32,7 +32,7 @@ const getSingleUser = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { fullname, email, password, phoneNo, address, roleId } = req.body;
-    const image = req.file ? req.file.filename : "default.png";
+    const image = req.file ? req.file.filePath : "default.png";
 
     if (!fullname || !email || !password) {
       return res
@@ -113,7 +113,7 @@ const updateUser = async (req, res) => {
     }
 
     if (req.file) {
-      updatedData.image = req.file.filename;
+      updatedData.image = req.file.filePath;
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {

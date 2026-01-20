@@ -31,7 +31,7 @@ const createBanner = async (req, res) => {
   try {
     const { link, location, displayOrder, startDate, endDate, active } =
       req.body;
-    const image = req.file ? req.file.filename : "";
+     const image = req.file ? req.file.path : null;
     const newbanner = await Banner.create({
       link,
       location,
@@ -72,7 +72,7 @@ const updateBanner = async (req, res) => {
 
     const { link, location, displayOrder, startDate, endDate, active } =
       req.body;
-    const image = req.file ? req.file.filename : null;
+     const image = req.file ? req.file.path : null;
 
     const updatePayload = {
       link,

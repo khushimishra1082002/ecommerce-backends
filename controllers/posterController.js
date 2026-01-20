@@ -33,7 +33,9 @@ const createPoster = async (req, res) => {
       return res.status(400).json({ message: "Image is required" });
     }
 
-    const image = req.file.filename;
+    // const image = req.file.filePath;
+
+     const image = req.file ? req.file.path : null;
 
     const newPoster = await Poster.create({
       link,

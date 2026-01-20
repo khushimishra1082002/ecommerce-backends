@@ -46,6 +46,8 @@ const getSingleProduct = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+  console.log("FILES:", req.files);
+
   try {
     let {
       name,
@@ -66,7 +68,8 @@ const createProduct = async (req, res) => {
       size,
     } = req.body;
 
-    const images = req.files ? req.files.map((file) => file.filename) : [];
+    // const images = req.files ? req.files.map((file) => file.filePath) : [];
+    const images = req.files ? req.files.map((file) => file.path) : [];
 
     const slug = slugify(name, { lower: true, strict: true });
 
@@ -145,6 +148,10 @@ const updateProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
 
+    console.log("BODY IMAGE:", req.body.image);
+console.log("FILES:", req.files);
+
+
     const existingProduct = await Products.findById(productId);
     if (!existingProduct) {
       return res.status(404).json({ message: "Product not found" });
@@ -161,7 +168,7 @@ const updateProduct = async (req, res) => {
     }
 
     if (req.files && req.files.length > 0) {
-      updateData.image = req.files.map((file) => file.filename);
+      updateData.image = req.files.map((file) => file.path);
     } else {
       updateData.image = existingProduct.image; // Keep old images
     }
@@ -169,7 +176,7 @@ const updateProduct = async (req, res) => {
     const updatedProduct = await Products.findByIdAndUpdate(
       productId,
       updateData,
-      { new: true }
+      { new: true },
     );
 
     res.status(200).json({
@@ -268,7 +275,7 @@ const postRecentlyViwedProduct = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     user.recentlyViewed = user.recentlyViewed.filter(
-      (item) => item.productId?.toString() !== productId.toString()
+      (item) => item.productId?.toString() !== productId.toString(),
     );
 
     user.recentlyViewed.unshift({
@@ -302,7 +309,7 @@ const deleteRecentlyViewedProduct = async (req, res) => {
 
     // Filter out the specific product from recentlyViewed list
     user.recentlyViewed = user.recentlyViewed.filter(
-      (item) => item.productId?.toString() !== productId
+      (item) => item.productId?.toString() !== productId,
     );
 
     await user.save();
@@ -323,14 +330,18 @@ const getRecentlyViewdProduct = async (req, res) => {
   console.log("userIdmm", userId);
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate("recentlyViewed.productId");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    await user.populate("recentlyViewed.productId");
-    res.json(user.recentlyViewed);
+    // 🔹 Filter out deleted products
+    const filteredRecentlyViewed = user.recentlyViewed.filter(
+      (item) => item.productId !== null
+    );
+
+    res.json(filteredRecentlyViewed);
   } catch (error) {
     res.status(500).json({
       message: "An internal server error occurred",
@@ -338,6 +349,7 @@ const getRecentlyViewdProduct = async (req, res) => {
     });
   }
 };
+
 
 const getSimilorProduct = async (req, res) => {
   const productId = req.params.productId;
@@ -525,31 +537,31 @@ const getFilteredProducts = async (req, res) => {
     }
 
     if (q) {
-  const regex = new RegExp(q, "i");
+      const regex = new RegExp(q, "i");
 
-  const matchedCategory = await Category.findOne({ name: regex });
-  const matchedSubcategory = await Subcategory.findOne({ name: regex });
-  const matchedBrand = await Brand.findOne({ name: regex });
+      const matchedCategory = await Category.findOne({ name: regex });
+      const matchedSubcategory = await Subcategory.findOne({ name: regex });
+      const matchedBrand = await Brand.findOne({ name: regex });
 
-  const orConditions = [
-    { name: { $regex: q, $options: "i" } },
-    { description: { $regex: q, $options: "i" } },
-  ];
+      const orConditions = [
+        { name: { $regex: q, $options: "i" } },
+        { description: { $regex: q, $options: "i" } },
+      ];
 
-  if (matchedCategory) {
-    orConditions.push({ category: matchedCategory._id });
-  }
+      if (matchedCategory) {
+        orConditions.push({ category: matchedCategory._id });
+      }
 
-  if (matchedSubcategory) {
-    orConditions.push({ subcategory: matchedSubcategory._id });
-  }
+      if (matchedSubcategory) {
+        orConditions.push({ subcategory: matchedSubcategory._id });
+      }
 
-  if (matchedBrand) {
-    orConditions.push({ brand: matchedBrand._id });
-  }
+      if (matchedBrand) {
+        orConditions.push({ brand: matchedBrand._id });
+      }
 
-  filter.$or = orConditions;
-}
+      filter.$or = orConditions;
+    }
 
     if (minPrice || maxPrice) {
       filter.price = {};
@@ -609,8 +621,6 @@ const getFilteredProducts = async (req, res) => {
   }
 };
 
-
-
 const deleteMultipleProduct = async (req, res) => {
   try {
     const { ids } = req.body;
@@ -639,7 +649,7 @@ const deleteNullRecentlyViewed = async (req, res) => {
     }
 
     user.recentlyViewed = user.recentlyViewed.filter(
-      (item) => item.productId !== null && item.productId !== undefined
+      (item) => item.productId !== null && item.productId !== undefined,
     );
 
     await user.save();
