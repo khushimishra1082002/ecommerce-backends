@@ -17,5 +17,4 @@ const upload = multer({
   },
 });
 
-// ✅ MUST be a middleware function
 module.exports = upload.single("image");

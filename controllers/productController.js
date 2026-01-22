@@ -27,7 +27,7 @@ const getAllProducts = async (req, res) => {
 
 const getSingleProduct = async (req, res) => {
   const productID = req.params.productId;
-  // console.log("productID", productID);
+  console.log("productID", productID);
 
   try {
     const singleProduct = await Products.findById(productID)
@@ -68,7 +68,6 @@ const createProduct = async (req, res) => {
       size,
     } = req.body;
 
-    // const images = req.files ? req.files.map((file) => file.filePath) : [];
     const images = req.files ? req.files.map((file) => file.path) : [];
 
     const slug = slugify(name, { lower: true, strict: true });
@@ -144,13 +143,13 @@ const createProduct = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params.productId;
 
     console.log("BODY IMAGE:", req.body.image);
-console.log("FILES:", req.files);
-
+    console.log("FILES:", req.files);
 
     const existingProduct = await Products.findById(productId);
     if (!existingProduct) {
@@ -170,7 +169,7 @@ console.log("FILES:", req.files);
     if (req.files && req.files.length > 0) {
       updateData.image = req.files.map((file) => file.path);
     } else {
-      updateData.image = existingProduct.image; // Keep old images
+      updateData.image = existingProduct.image;
     }
 
     const updatedProduct = await Products.findByIdAndUpdate(
@@ -194,7 +193,6 @@ console.log("FILES:", req.files);
 const deleteProduct = async (req, res) => {
   try {
     const { productId } = req.params;
-    // console.log("productId", productId);
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).json({ message: "Invalid product ID format" });
     }
@@ -307,7 +305,6 @@ const deleteRecentlyViewedProduct = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Filter out the specific product from recentlyViewed list
     user.recentlyViewed = user.recentlyViewed.filter(
       (item) => item.productId?.toString() !== productId,
     );
@@ -330,15 +327,16 @@ const getRecentlyViewdProduct = async (req, res) => {
   console.log("userIdmm", userId);
 
   try {
-    const user = await User.findById(userId).populate("recentlyViewed.productId");
+    const user = await User.findById(userId).populate(
+      "recentlyViewed.productId",
+    );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // 🔹 Filter out deleted products
     const filteredRecentlyViewed = user.recentlyViewed.filter(
-      (item) => item.productId !== null
+      (item) => item.productId !== null,
     );
 
     res.json(filteredRecentlyViewed);
@@ -349,7 +347,6 @@ const getRecentlyViewdProduct = async (req, res) => {
     });
   }
 };
-
 
 const getSimilorProduct = async (req, res) => {
   const productId = req.params.productId;
@@ -397,7 +394,7 @@ const getRecommendedProduct = async (req, res) => {
 
     const recent = user.recentlyViewed
       .filter((item) => item.productId)
-      .slice(-5); // last 5 viewed
+      .slice(-5);
 
     console.log("recent", recent);
 

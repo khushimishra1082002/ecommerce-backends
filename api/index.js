@@ -1,4 +1,4 @@
-const app = require("../server"); // Adjust path if needed
+const app = require("../server"); 
 module.exports = (req, res) => {
   return app(req, res);
 };

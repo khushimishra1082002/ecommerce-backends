@@ -30,7 +30,7 @@ const getAllSubcategory = async (req, res) => {
   try {
     const subcategories = await await Subcategory.find().populate(
       "category",
-      "name"
+      "name",
     );
 
     if (!subcategories || subcategories.length === 0) {
@@ -98,7 +98,7 @@ const createSubcategory = async (req, res) => {
       availableSizes,
     });
     res.status(201).json({
-      ok: true, 
+      ok: true,
       message: "Subcategory added successfully",
       subcategory: newSubcategory,
     });
@@ -116,7 +116,7 @@ const updatedSubcategory = async (req, res) => {
       updatedData,
       {
         new: true,
-      }
+      },
     );
     res.status(200).json({
       message: "Subcategory edit successfully",
@@ -138,9 +138,8 @@ const deleteSubcategory = async (req, res) => {
       return res.status(400).json({ message: "Invalid subcategory ID format" });
     }
 
-    const deleteSubcategoryData = await Subcategory.findByIdAndDelete(
-      subcategoryID
-    );
+    const deleteSubcategoryData =
+      await Subcategory.findByIdAndDelete(subcategoryID);
 
     if (!deleteSubcategoryData) {
       return res.status(404).json({ message: "Subcategory not found" });
@@ -202,7 +201,7 @@ const getFilteredSubategories = async (req, res) => {
       subcategories = subcategories.filter(
         (sub) =>
           sub.name.toLowerCase().includes(lowerQ) ||
-          sub.category?.name?.toLowerCase().includes(lowerQ)
+          sub.category?.name?.toLowerCase().includes(lowerQ),
       );
     }
 

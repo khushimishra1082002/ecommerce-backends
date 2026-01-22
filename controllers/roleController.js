@@ -27,7 +27,7 @@ const getSingleRole = async (req, res) => {
     if (!id) {
       return res.status(400).json({ message: " ID does not exist" });
     }
-    const singleRole = await Role.findById(id).populate("permissions")
+    const singleRole = await Role.findById(id).populate("permissions");
     res.status(200).json(singleRole);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -81,9 +81,8 @@ const updateRole = async (req, res) => {
 
     let { name, permissions, description } = req.body;
 
-    
     if (typeof permissions === "string") {
-      permissions = permissions.split(",").map(p => p.trim());
+      permissions = permissions.split(",").map((p) => p.trim());
     }
 
     const updatedData = {
@@ -124,7 +123,7 @@ const getFilteredRoles = async (req, res) => {
 
     console.log("Filtered Role Count:", roles.length);
 
-    res.status(200).json(roles); 
+    res.status(200).json(roles);
   } catch (err) {
     res.status(500).json({
       message: "An internal server error occurred",
@@ -133,7 +132,6 @@ const getFilteredRoles = async (req, res) => {
   }
 };
 
-
 module.exports = {
   createRole,
   getRoles,
@@ -141,5 +139,5 @@ module.exports = {
   deleteRole,
   deleteMultipleRole,
   updateRole,
-  getFilteredRoles
+  getFilteredRoles,
 };

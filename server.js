@@ -24,7 +24,7 @@ const orderRoutes = require("./routes/orderRoutes");
 const roleRoutes = require("./routes/roleRoutes")
 const permissionRoutes = require("./routes/permissionRoutes")
 const saveforletterRoutes = require("./routes/savedForLetterRoutes")
-
+const profileRoutes = require("./routes/profileRoutes")
 
 const app = express();
 
@@ -61,6 +61,7 @@ app.use("/api/order", orderRoutes);
 app.use("/api/role",roleRoutes)
 app.use("/api/permission",permissionRoutes)
 app.use("/api/saveforletters",saveforletterRoutes)
+app.use("/api/profile",profileRoutes)
 
 
 // Serve static files (only works locally or on platforms that allow local file system access)

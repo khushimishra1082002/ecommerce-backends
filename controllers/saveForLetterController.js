@@ -1,4 +1,4 @@
-const { Types } = require("mongoose"); // safer import
+const { Types } = require("mongoose");
 const SavedForLater = require("../models/SaveForLetterCartModel");
 const Cart = require("../models/CartModel");
 const CartSummary = require("../utils/calculateCartSummary");
@@ -13,35 +13,41 @@ const saveForLaterController = async (req, res) => {
         .json({ success: false, message: "Missing userId or productId" });
     }
 
-    // ✅ Convert string IDs to ObjectId
     const userObjId = new Types.ObjectId(userId);
     const prodId = new Types.ObjectId(productId);
 
-    // 1️⃣ Remove product from cart using $pull
     await Cart.updateOne(
       { userId: userObjId },
-      { $pull: { items: { productId: prodId } } }
+      { $pull: { items: { productId: prodId } } },
     );
 
-    // 2️⃣ Re-fetch cart and recalc summary
     const cart = await Cart.findOne({ userId: userObjId });
     if (cart) {
       await CartSummary(cart);
       await cart.save();
     }
 
-    // 3️⃣ Add or update in SavedForLater
-    const savedItem = await SavedForLater.findOne({ userId: userObjId, productId: prodId });
+    const savedItem = await SavedForLater.findOne({
+      userId: userObjId,
+      productId: prodId,
+    });
     if (savedItem) {
       savedItem.quantity = Number(quantity);
       await savedItem.save();
     } else {
-      await SavedForLater.create({ userId: userObjId, productId: prodId, quantity });
+      await SavedForLater.create({
+        userId: userObjId,
+        productId: prodId,
+        quantity,
+      });
     }
 
-    // 4️⃣ Return updated data
-    const updatedCart = await Cart.findOne({ userId: userObjId }).populate("items.productId");
-    const savedForLater = await SavedForLater.find({ userId: userObjId }).populate("productId");
+    const updatedCart = await Cart.findOne({ userId: userObjId }).populate(
+      "items.productId",
+    );
+    const savedForLater = await SavedForLater.find({
+      userId: userObjId,
+    }).populate("productId");
 
     return res.status(200).json({
       success: true,
@@ -54,7 +60,6 @@ const saveForLaterController = async (req, res) => {
     return res.status(500).json({ success: false, error: err.message });
   }
 };
-
 
 const getSavedForLaterController = async (req, res) => {
   const { userId } = req.params;
@@ -69,8 +74,9 @@ const getSavedForLaterController = async (req, res) => {
 
     const userObjId = new Types.ObjectId(userId);
 
-    const savedItems = await SavedForLater.find({ userId: userObjId })
-      .populate("productId");
+    const savedItems = await SavedForLater.find({ userId: userObjId }).populate(
+      "productId",
+    );
 
     return res.status(200).json({
       success: true,
@@ -125,5 +131,8 @@ const removeSavedForLaterController = async (req, res) => {
   }
 };
 
-
-module.exports = { saveForLaterController,getSavedForLaterController ,removeSavedForLaterController};
+module.exports = {
+  saveForLaterController,
+  getSavedForLaterController,
+  removeSavedForLaterController,
+};

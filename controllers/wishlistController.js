@@ -5,7 +5,7 @@ const getWishlistProduct = async (req, res) => {
 
   try {
     const wishlist = await Wishlist.findOne({ userId }).populate(
-      "products.productId"
+      "products.productId",
     );
 
     if (!wishlist) {
@@ -36,7 +36,7 @@ const addProductInwishlist = async (req, res) => {
 
       // Check if the product already exists in wishlist
       const alreadyExists = wishlist.products.some(
-        (item) => item.productId.toString() === productId
+        (item) => item.productId.toString() === productId,
       );
 
       if (alreadyExists) {
@@ -67,7 +67,7 @@ const removeProductFromWishlist = async (req, res) => {
   try {
     const wishlist = await Wishlist.findOne({ userId });
     wishlist.products = wishlist.products.filter(
-      (item) => item.productId.toString() !== productId
+      (item) => item.productId.toString() !== productId,
     );
     await wishlist.save();
     res.status(200).json({ message: "Product deleted successfully", wishlist });

@@ -20,12 +20,6 @@ const {
 const multipleUpload = require("../middlewares/MultipleUpload"); //
 const singleUpload = require("../middlewares/singleUpload"); //
 
-const { authMiddlewares } = require("../middlewares/authMiddleWare");
-
-console.log(typeof singleUpload); // function ✅
-console.log(typeof multipleUpload); // function ✅
-
-
 router.get("/getAllProducts", getAllProducts);
 router.get("/getSingleProduct/:productId", getSingleProduct);
 router.post("/createProduct", multipleUpload, createProduct);

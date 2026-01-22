@@ -4,10 +4,10 @@ const {
   postdeliveryInfoUser,
   getDeliveryInfoUser,
 } = require("../controllers/deliveryInfoController");
-const { authMiddlewares } = require("../middlewares/authMiddleWare");
+const authtoken = require("../middlewares/authMiddleWare");
 
-router.post("/postdeliveryInfoUser", authMiddlewares, postdeliveryInfoUser);
-router.get("/getDeliveryInfoUser", authMiddlewares, getDeliveryInfoUser);
+router.post("/postdeliveryInfoUser", authtoken, postdeliveryInfoUser);
+router.get("/getDeliveryInfoUser", authtoken, getDeliveryInfoUser);
 
 
 module.exports = router;

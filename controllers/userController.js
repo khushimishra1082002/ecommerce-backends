@@ -32,7 +32,7 @@ const getSingleUser = async (req, res) => {
 const createUser = async (req, res) => {
   try {
     const { fullname, email, password, phoneNo, address, roleId } = req.body;
-    const image = req.file ? req.file.filePath : "default.png";
+    const image = req.file ? req.file.Path : "default.png";
 
     if (!fullname || !email || !password) {
       return res
@@ -113,7 +113,7 @@ const updateUser = async (req, res) => {
     }
 
     if (req.file) {
-      updatedData.image = req.file.filePath;
+      updatedData.image = req.file.path;
     }
 
     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
@@ -143,8 +143,8 @@ const assignRoleToUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       userId,
       { roleId },
-      { new: true }
-    ).populate("roleId"); // populate role details
+      { new: true },
+    ).populate("roleId");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

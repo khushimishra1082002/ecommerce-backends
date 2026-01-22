@@ -33,9 +33,7 @@ const createPoster = async (req, res) => {
       return res.status(400).json({ message: "Image is required" });
     }
 
-    // const image = req.file.filePath;
-
-     const image = req.file ? req.file.path : null;
+    const image = req.file ? req.file.path : null;
 
     const newPoster = await Poster.create({
       link,
@@ -55,7 +53,7 @@ const createPoster = async (req, res) => {
       newPoster,
     });
   } catch (err) {
-    console.error("Server error:", err); // log full error
+    console.error("Server error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };

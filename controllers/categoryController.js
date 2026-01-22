@@ -27,8 +27,6 @@ const getSingleCategory = async (req, res) => {
 const createCategory = async (req, res) => {
   try {
     let { name, description, isActive } = req.body;
-
-    // ✅ Cloudinary path
     const image = req.file?.path;
 
     if (!image) {
@@ -55,7 +53,6 @@ const createCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
 
 const deleteCategory = async (req, res) => {
   try {
@@ -88,7 +85,6 @@ const updatedCategory = async (req, res) => {
     const { name, description } = req.body;
     const isActive = req.body.isActive === "true";
 
-    // ✅ Multer + Cloudinary path
     const image = req.file ? req.file.path : existingCategory.image;
 
     const updatedData = {
@@ -107,7 +103,7 @@ const updatedCategory = async (req, res) => {
     const newUpdatedData = await Category.findByIdAndUpdate(
       categoryID,
       updatedData,
-      { new: true }
+      { new: true },
     );
 
     res.status(200).json({
@@ -119,7 +115,6 @@ const updatedCategory = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
 
 const getFilteredCategories = async (req, res) => {
   try {

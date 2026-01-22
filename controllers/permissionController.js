@@ -6,7 +6,11 @@ const createPermission = async (req, res) => {
     const permission = await Permission.create({ name, module, description });
     res
       .status(201)
-      .json({ success: true, message: "Permission created successfully", permission });
+      .json({
+        success: true,
+        message: "Permission created successfully",
+        permission,
+      });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -27,7 +31,7 @@ const getSinglePermission = async (req, res) => {
     if (!id) {
       return res.status(400).json({ message: " ID does not exist" });
     }
-    const singleRole = await Permission.findById(id)
+    const singleRole = await Permission.findById(id);
     res.status(200).json(singleRole);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -49,7 +53,6 @@ const deletePermission = async (req, res) => {
   }
 };
 
-
 const deleteMultiplePermission = async (req, res) => {
   try {
     const { ids } = req.body;
@@ -67,7 +70,6 @@ const deleteMultiplePermission = async (req, res) => {
   }
 };
 
-
 const getFilteredPermission = async (req, res) => {
   try {
     const { q } = req.query;
@@ -83,7 +85,7 @@ const getFilteredPermission = async (req, res) => {
 
     console.log("Filter Object:", JSON.stringify(filter, null, 2));
 
-    const permission = await Permission.find(filter)
+    const permission = await Permission.find(filter);
 
     console.log("Filtered permission Count:", permission.length);
 
@@ -129,7 +131,12 @@ const updatePermission = async (req, res) => {
   }
 };
 
-
-module.exports = { createPermission, getPermissions ,deletePermission ,deleteMultiplePermission,
-  getFilteredPermission,getSinglePermission,updatePermission
+module.exports = {
+  createPermission,
+  getPermissions,
+  deletePermission,
+  deleteMultiplePermission,
+  getFilteredPermission,
+  getSinglePermission,
+  updatePermission,
 };

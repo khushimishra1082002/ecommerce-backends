@@ -22,11 +22,11 @@ const getDiscountOptions = async (req, res) => {
 const createDiscountOptions = async (req, res) => {
   const { categoryId, options } = req.body;
 
-  console.log("categoryIdyyy",categoryId)
+  console.log("categoryId", categoryId);
 
   try {
     const exists = await DiscountOption.findOne({ categoryId });
-    console.log(exists,"exist data")
+    console.log(exists, "exist data");
     if (exists) {
       return res
         .status(400)
@@ -38,7 +38,7 @@ const createDiscountOptions = async (req, res) => {
       options,
     });
 
-    console.log("newDiscountOption",newDiscountOption)
+    console.log("newDiscountOption", newDiscountOption);
 
     res.status(201).json({
       message: "Discount Option Created Successfully",

@@ -21,7 +21,8 @@ const getUserOrders = async (req, res) => {
     const { userId } = req.params;
 
     const orders = await Order.find({ userId })
-      .sort({ createdAt: -1 }).populate("userId", "fullname email phoneNo address")
+      .sort({ createdAt: -1 })
+      .populate("userId", "fullname email phoneNo address")
       .populate("items.productId", "name image price");
 
     res.status(200).json(orders);
@@ -66,7 +67,7 @@ const placeOrder = async (req, res) => {
       status,
     });
 
-   const data = await User.findByIdAndUpdate(
+    const data = await User.findByIdAndUpdate(
       userId,
       {
         phoneNo: deliveryInfo.phoneNo,
@@ -77,16 +78,16 @@ const placeOrder = async (req, res) => {
           city: deliveryInfo.city,
           state: deliveryInfo.state,
           zipCode: deliveryInfo.zip,
-          country: deliveryInfo.country || "India", 
+          country: deliveryInfo.country || "India",
         },
       },
-      { new: true }
+      { new: true },
     );
 
     res.status(201).json({
       message: "Order placed successfully",
       order: newOrder,
-      data:data
+      data: data,
     });
   } catch (err) {
     res.status(500).json({
@@ -142,7 +143,7 @@ const getFilteredOrders = async (req, res) => {
         { "deliveryInfo.phoneNo": regex },
         { "deliveryInfo.city": regex },
         { status: regex },
-        { paymentMethod: regex }
+        { paymentMethod: regex },
       );
 
       filter.$or = orFilters;
@@ -168,7 +169,7 @@ const updateOrderStatus = async (req, res) => {
     const updatedOrder = await Order.findByIdAndUpdate(
       id,
       { status },
-      { new: true }
+      { new: true },
     );
     res.status(200).json(updatedOrder);
   } catch (err) {
