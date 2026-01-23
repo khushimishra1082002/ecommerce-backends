@@ -8,6 +8,6 @@ const singleUpload = require("../middlewares/singleUpload");
 const authtoken = require("../middlewares/authMiddleWare")
 
 router.get("/me",authtoken, getMyProfile);
-router.put("/updateProfile", singleUpload, updateMyProfile);
+router.put("/updateProfile",authtoken, singleUpload, updateMyProfile);
 
 module.exports = router;
