@@ -127,12 +127,12 @@ const getFilteredOrders = async (req, res) => {
     if (q) {
       const orFilters = [];
 
-      // If q is a valid MongoDB ObjectId, add _id match
+     
       if (mongoose.Types.ObjectId.isValid(q)) {
         orFilters.push({ _id: new mongoose.Types.ObjectId(q) });
       }
 
-      // Search in string fields (case-insensitive)
+     
       const regex = { $regex: q, $options: "i" };
 
       orFilters.push(
