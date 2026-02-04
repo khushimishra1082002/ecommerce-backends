@@ -74,13 +74,13 @@ const uploadsPath = path.join(__dirname, "uploads");
 app.use("/api/upload", express.static(uploadsPath));
 
 // Export the app for serverless function
-// module.exports = app;
-
-
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(` Server running locally on http://localhost:${PORT}`);
-});
-
 module.exports = app;
+
+
+// const PORT = process.env.PORT || 5000;
+
+// app.listen(PORT, () => {
+//   console.log(` Server running locally on http://localhost:${PORT}`);
+// });
+
+// module.exports = app;
