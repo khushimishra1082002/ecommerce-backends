@@ -6,7 +6,14 @@ const posterSchema = new mongoose.Schema({
   subtitle: { type: String },
   description: { type: String },
   link: { type: String },
-  location: { type: String, required: true },
+  location: {
+    type: String,
+    required: true,
+    enum: [
+      "herosection",
+      "homepage_top",
+    ],
+  },
   displayOrder: { type: Number, default: 0 },
   startDate: { type: Date, default: Date.now },
   endDate: { type: Date },

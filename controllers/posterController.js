@@ -12,6 +12,24 @@ const getAllPoster = async (req, res) => {
   }
 };
 
+const getSinglePoster = async (req, res) => {
+  try {
+    const { posterId } = req.params;
+
+    const poster = await Poster.findById(posterId);
+
+    if (!poster) {
+      return res.status(404).json({ message: "Poster not found" });
+    }
+
+    res.status(200).json(poster);
+  } catch (err) {
+    console.error("Get single poster error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
 const createPoster = async (req, res) => {
   try {
     const {
@@ -71,8 +89,67 @@ const deletePoster = async (req, res) => {
   }
 };
 
+const updatePoster = async (req, res) => {
+  try {
+    const { posterId } = req.params;
+
+    const {
+      link,
+      title,
+      subtitle,
+      description,
+      location,
+      displayOrder,
+      startDate,
+      endDate,
+      active,
+    } = req.body;
+
+   
+    const poster = await Poster.findById(posterId);
+    if (!poster) {
+      return res.status(404).json({ message: "Poster not found" });
+    }
+
+   
+    let image = poster.image;
+    if (req.file) {
+      image = req.file.path;
+    }
+
+    const updatedPoster = await Poster.findByIdAndUpdate(
+      posterId,
+      {
+        link,
+        title,
+        subtitle,
+        description,
+        location,
+        displayOrder,
+        startDate,
+        endDate,
+        active,
+        image,
+      },
+      { new: true },
+    );
+
+    res.status(200).json({
+      message: "Poster updated successfully",
+      updatedPoster,
+    });
+  } catch (err) {
+    console.error("Update poster error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+
 module.exports = {
   getAllPoster,
+  getSinglePoster,
   createPoster,
   deletePoster,
+  updatePoster
 };
